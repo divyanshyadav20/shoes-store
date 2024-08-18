@@ -1,3 +1,9 @@
+import Navbar from "@/components/navbar/Navbar";
+
 export default function Home() {
-  return <div>Shoes Store</div>;
+  return (
+    <div>
+      <Navbar />
+    </div>
+  );
 }
