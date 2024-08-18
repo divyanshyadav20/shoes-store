@@ -1,3 +1,5 @@
+import Footer from "@/components/Footer";
+import Navbar from "@/components/navbar/Navbar";
 import Providers from "@/components/Providers";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
@@ -6,8 +8,11 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Shoes Store",
-  description: "An e-commerce store for shoes",
+  title: {
+    template: "%s | Shoes Store",
+    default: "Shoes Store",
+  },
+  description: "An online store for shoes",
 };
 
 export default function RootLayout({
@@ -21,7 +26,11 @@ export default function RootLayout({
         <link rel="icon" type="image/png" href="brand-logo.png" />
       </head>
       <body className={inter.className}>
-        <Providers>{children}</Providers>
+        <Providers>
+          <Navbar />
+          {children}
+          <Footer />
+        </Providers>
       </body>
     </html>
   );

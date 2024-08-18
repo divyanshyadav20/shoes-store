@@ -22,7 +22,7 @@ const features = [
 
 function Features() {
   return (
-    <div className="border-b border-t">
+    <div className="border-t">
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:pb-24 lg:max-w-7xl lg:px-8">
         <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
           {features.map((feature, index) => (
