@@ -6,6 +6,7 @@ type Props = {
   shoes: Shoe[];
   title?: string;
   showProductDetails?: boolean;
+  animatedList?: boolean;
 };
 
 function ProductList({ shoes, title, showProductDetails }: Props) {
