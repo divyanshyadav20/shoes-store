@@ -1,3 +1,4 @@
+import { HEADER_LINKS } from "@/lib/constants";
 import { ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -24,6 +25,22 @@ export default function Navbar() {
                 alt="Brand Logo"
               />
             </Link>
+          </div>
+
+          {/* Links */}
+          <div className="ml-7">
+            <ul className="hidden space-x-4 lg:flex">
+              {HEADER_LINKS.map(({ name, href }, index) => (
+                <li key={index}>
+                  <Link
+                    className="transition-colors duration-300 hover:text-indigo-600"
+                    href={href}
+                  >
+                    {name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
 
           {/* Cart */}

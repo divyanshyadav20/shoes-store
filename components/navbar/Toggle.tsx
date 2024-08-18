@@ -1,4 +1,6 @@
+import { FOOTER_LINKS } from "@/lib/constants";
 import { Menu } from "lucide-react";
+import Link from "next/link";
 import { Button } from "../ui/button";
 import {
   Drawer,
@@ -24,11 +26,20 @@ function Toggle() {
           <DrawerOverlay className="fixed inset-0 bg-black/40" />
           <DrawerContent>
             <DrawerHeader>
-              <DrawerTitle>Are you absolutely sure?</DrawerTitle>
-              <DrawerDescription>
-                This action cannot be undone.
-              </DrawerDescription>
+              <DrawerTitle></DrawerTitle>
+              <DrawerDescription></DrawerDescription>
             </DrawerHeader>
+            <div className="flex flex-col gap-5 p-5">
+              {FOOTER_LINKS.map(({ name, href }, index) => (
+                <Link
+                  className="text-xl transition-colors duration-300 hover:text-indigo-600"
+                  href={href}
+                  key={index}
+                >
+                  {name}
+                </Link>
+              ))}
+            </div>
           </DrawerContent>
         </DrawerPortal>
       </Drawer>
