@@ -24,7 +24,7 @@ export function generateMetadata({ params }: Props) {
   };
 }
 
-export function RatingStar({ isGray }: { isGray?: boolean }) {
+function RatingStar({ isGray }: { isGray?: boolean }) {
   if (isGray) {
     return (
       <svg
