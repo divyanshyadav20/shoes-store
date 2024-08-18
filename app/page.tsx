@@ -4,6 +4,7 @@ import Hero from "@/components/Hero";
 import Navbar from "@/components/navbar/Navbar";
 import ProductList from "@/components/ProductList";
 import Promo from "@/components/Promo";
+import Reveal from "@/components/Reveal";
 import shoes from "@/data.json";
 
 export default function Home() {
@@ -12,8 +13,12 @@ export default function Home() {
       <Navbar />
       <Hero />
       <Promo />
-      <ProductList shoes={shoes.splice(0, 4)} title="Frequently Bought" />
-      <Features />
+      <Reveal>
+        <ProductList shoes={shoes.splice(0, 4)} title="Frequently Bought" />
+      </Reveal>
+      <Reveal>
+        <Features />
+      </Reveal>
       <Footer />
     </div>
   );
