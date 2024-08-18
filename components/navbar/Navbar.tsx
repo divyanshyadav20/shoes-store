@@ -4,9 +4,9 @@ import Link from "next/link";
 import { Button } from "../ui/button";
 import Toggle from "./Toggle";
 
-function Navbar() {
+export default function Navbar() {
   return (
-    <header className="sticky top-0 bg-white shadow-md">
+    <header className="sticky top-0 z-40 bg-opacity-30 backdrop-blur-lg backdrop-filter">
       <nav aria-label="Top" className="mx-auto max-w-7xl px-2">
         <div className="flex h-12 items-center">
           {/* Mobile Toggle */}
@@ -28,7 +28,11 @@ function Navbar() {
 
           {/* Cart */}
           <div className="ml-auto">
-            <Button className="border-0" variant="outline" size="icon">
+            <Button
+              className="border-0 bg-transparent"
+              variant="outline"
+              size="icon"
+            >
               <ShoppingCart size={20} className="text-gray-500" />
             </Button>
           </div>
@@ -37,5 +41,3 @@ function Navbar() {
     </header>
   );
 }
-
-export default Navbar;
