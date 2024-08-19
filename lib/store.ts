@@ -1,18 +1,6 @@
-import { Shoe } from "@/models";
+import { CartItem, Shoe, Store } from "@/models";
 import { create } from "zustand";
-
-type CartItem = {
-  shoe: Shoe;
-  quantity: number;
-};
-
-type Store = {
-  isCartOpen: boolean;
-  cartItems: CartItem[];
-  toggleCart: (bool: boolean) => void;
-  addToCart: (shoe: Shoe) => void;
-  removeFromCart: (id: string) => void;
-};
+import { persist } from "zustand/middleware";
 
 function addToCart(cartItems: CartItem[], shoe: Shoe) {
   const itemAlreadyInCart = cartItems.find((item) => item.shoe.id === shoe.id);
@@ -70,12 +58,32 @@ function removeFromCart(cartItems: CartItem[], id: string) {
   };
 }
 
-const useShoesStore = create<Store>()((set) => ({
-  isCartOpen: false,
-  cartItems: [],
-  addToCart: (shoe) => set((state) => addToCart(state.cartItems, shoe)),
-  removeFromCart: (id) => set((state) => removeFromCart(state.cartItems, id)),
-  toggleCart: (bool) => set(() => ({ isCartOpen: bool })),
-}));
+function setCartItems(shoes: Shoe[]): CartItem[] {
+  return shoes.map((shoe) => ({
+    shoe,
+    quantity: 1,
+  }));
+}
+
+const useShoesStore = create<Store>()(
+  persist(
+    (set) => ({
+      orders: [],
+      cartItems: [],
+      isCartOpen: false,
+      discountCode: null,
+      setDiscountCode: (code) => set(() => ({ discountCode: code })),
+      addToCart: (shoe) => set((state) => addToCart(state.cartItems, shoe)),
+      removeFromCart: (id) =>
+        set((state) => removeFromCart(state.cartItems, id)),
+      toggleCart: (bool) => set(() => ({ isCartOpen: bool })),
+      setCartItems: (shoes) => set(() => ({ cartItems: setCartItems(shoes) })),
+      addOrder: (order) =>
+        set((state) => ({ orders: [...state.orders, order] })),
+      clearCart: () => set(() => ({ cartItems: [] })),
+    }),
+    { name: "shoes-store-storage" },
+  ),
+);
 
 export default useShoesStore;

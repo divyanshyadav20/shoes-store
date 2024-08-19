@@ -3,6 +3,10 @@ export const HEADER_LINKS = [
     name: "Shop",
     href: "/shop",
   },
+  {
+    name: "Admin",
+    href: "/admin",
+  },
 ];
 
 export const FOOTER_LINKS = [
@@ -11,8 +15,8 @@ export const FOOTER_LINKS = [
     href: "/shop",
   },
   {
-    name: "About",
-    href: "#",
+    name: "Admin",
+    href: "/admin",
   },
   {
     name: "Privacy Policy",
