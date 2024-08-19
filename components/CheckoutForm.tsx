@@ -1,16 +1,20 @@
 "use client";
 
+import { useStoreLocalStorage } from "@/hooks/useStoreLocalStorage";
 import { CheckoutFormSchema } from "@/lib/formSchema";
 import useShoesStore from "@/lib/store";
 import { cn } from "@/lib/utils";
-import { Shoe } from "@/models";
+import { Order, Shoe } from "@/models";
 import { zodResolver } from "@hookform/resolvers/zod";
 import confetti from "canvas-confetti";
-import { ShoppingCart } from "lucide-react";
+import { Check, Info, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
+import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { Button } from "./ui/button";
 import {
   Form,
@@ -92,21 +96,38 @@ function OrderSummaryPrice({
   title,
   value,
   className,
+  isSavings,
 }: {
   title: string;
   value: number;
   className?: string;
+  isSavings?: boolean;
 }) {
   return (
     <div className={cn("flex items-center justify-between gap-4", className)}>
       <p className="text-base font-normal text-gray-500">{title}</p>
-      <p className="text-base font-medium">${value}</p>
+      <p
+        className={cn(
+          "text-base font-medium",
+          isSavings ? "text-green-600" : "",
+        )}
+      >
+        {isSavings ? "-" : ""} ${value}
+      </p>
     </div>
   );
 }
 
 function CheckoutForm() {
-  const { cartItems, removeFromCart } = useShoesStore();
+  const [orderPlaced, setOrderPlaced] = useState(false);
+  const [savings, setSavings] = useState(0);
+  const [totalAfterTax, setTotalAfterTax] = useState(0);
+  const { orders, discountCode } = useStoreLocalStorage();
+
+  const n = 3;
+
+  const { cartItems, removeFromCart, addOrder, clearCart, setDiscountCode } =
+    useShoesStore();
 
   const form = useForm<z.infer<typeof CheckoutFormSchema>>({
     resolver: zodResolver(CheckoutFormSchema),
@@ -121,6 +142,54 @@ function CheckoutForm() {
     },
   });
 
+  /**
+   * Generate discount code for every n-th order
+   * 1. Get orders from local storage
+   * 2. Check if orders count is greater than 0
+   * 3. Check if orders count is divisible by n
+   * 4. Generate random discount code if eligible
+   * 5. Set discount code
+   */
+  function generateDiscountCode() {
+    const ordersCount = orders.length;
+    const isDiscountEligible = (ordersCount + 1) % n === 0;
+    const isDiscountAlreadySet = !!discountCode;
+
+    if (!isDiscountEligible) {
+      setDiscountCode(null);
+    }
+
+    if (ordersCount > 0 && isDiscountEligible && !isDiscountAlreadySet) {
+      const randomDiscountCode = Math.random().toString(36).substring(2, 15);
+      setDiscountCode(randomDiscountCode);
+    }
+  }
+
+  const totalCartValue = cartItems.reduce((acc, curr) => {
+    return acc + curr.shoe.price * curr.quantity;
+  }, 0);
+
+  const tax = 10;
+
+  function generateTotalAfterTax() {
+    setTotalAfterTax(totalCartValue + tax);
+  }
+
+  useEffect(() => {
+    generateDiscountCode();
+    generateTotalAfterTax();
+  }, []);
+
+  if (orderPlaced) {
+    return (
+      <div className="mt-8 flex min-h-96 flex-col items-center justify-center text-center">
+        <Check size={100} strokeWidth={1.5} className="text-green-500" />
+        <p className="my-4 text-xl">Order placed successfully!</p>
+      </div>
+    );
+  }
+
+  // Display empty screen if cart is empty
   if (!cartItems.length) {
     return (
       <div className="mt-8 flex min-h-96 flex-col items-center justify-center text-center">
@@ -129,17 +198,6 @@ function CheckoutForm() {
       </div>
     );
   }
-
-  const totalCartValue = cartItems.reduce((acc, curr) => {
-    return acc + curr.shoe.price * curr.quantity;
-  }, 0);
-
-  const tax = 10;
-  const totalAfterTax = totalCartValue + tax;
-
-  const onSubmit = (values: z.infer<typeof CheckoutFormSchema>) => {
-    console.log({ values });
-  };
 
   const confettiTime = () => {
     const end = Date.now() + 7 * 1000;
@@ -167,8 +225,64 @@ function CheckoutForm() {
     })();
   };
 
+  /**
+   * On successful form submission
+   * 1. Clear cart
+   * 2. Set order placed to true to display success message
+   * 3. Set discount code to null
+   * 4. Trigger confetti animation
+   */
+  const onSubmitSuccess = () => {
+    clearCart();
+    setOrderPlaced(true);
+    setDiscountCode(null);
+    confettiTime();
+  };
+
+  const onSubmit = (values: z.infer<typeof CheckoutFormSchema>) => {
+    const newOrderId = uuidv4();
+
+    if (!discountCode || values.discountCode !== discountCode) {
+      delete values.discountCode;
+    }
+
+    const newOrder: Order = {
+      id: newOrderId,
+      ...values,
+      items: cartItems,
+      totalAmount: totalAfterTax,
+      discountAmount: savings,
+    };
+
+    addOrder(newOrder);
+    onSubmitSuccess();
+  };
+
+  const onDiscountCodeApply = () => {
+    const enteredDiscountCode = form.getValues("discountCode");
+
+    if (discountCode && enteredDiscountCode === discountCode) {
+      const discount = Math.round(totalCartValue * 0.1 * 10) / 10;
+      setSavings(discount);
+      setTotalAfterTax(totalCartValue + tax - discount);
+    }
+  };
+
   return (
     <Form {...form}>
+      {discountCode && (
+        <div>
+          <Alert variant="info">
+            <Info className="h-4 w-4" />
+            <AlertTitle>Congratulations!</AlertTitle>
+            <AlertDescription>
+              You are one of the lucky users to get a discount code:{" "}
+              <span className="font-bold">{discountCode}</span>
+            </AlertDescription>
+          </Alert>
+        </div>
+      )}
+
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="mt-8 lg:flex lg:items-start lg:gap-6"
@@ -294,7 +408,11 @@ function CheckoutForm() {
                 </FormItem>
               )}
             />
-            <Button type="button" variant="custom">
+            <Button
+              onClick={onDiscountCodeApply}
+              type="button"
+              variant="custom"
+            >
               Apply
             </Button>
           </Box>
@@ -322,7 +440,14 @@ function CheckoutForm() {
                 title="Original Price"
                 value={totalCartValue}
               />
-              <OrderSummaryPrice className="mt-2" title="Savings" value={0} />
+              {savings > 0 && (
+                <OrderSummaryPrice
+                  className="mt-2"
+                  title="Savings"
+                  value={savings}
+                  isSavings
+                />
+              )}
               <OrderSummaryPrice className="mt-2" title="Tax" value={tax} />
             </div>
 
@@ -335,7 +460,6 @@ function CheckoutForm() {
               className="mt-4 h-10 w-full px-6 py-3 text-sm"
               variant="custom"
               type="submit"
-              onClick={() => confettiTime()}
             >
               Pay
             </Button>

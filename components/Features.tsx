@@ -10,7 +10,7 @@ const features = [
   {
     icon: <Truck size={100} strokeWidth={1} className="text-gray-600" />,
     title: "Free Delivery",
-    description: "Free delivery on COD orders above $299.",
+    description: "Free delivery on all COD orders.",
   },
   {
     icon: <House size={100} strokeWidth={1} className="text-gray-600" />,
