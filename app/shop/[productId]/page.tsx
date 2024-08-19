@@ -1,5 +1,5 @@
+import AddToCart from "@/components/AddToCart";
 import ProductList from "@/components/ProductList";
-import { Button } from "@/components/ui/button";
 import shoes from "@/data.json";
 import { Check } from "lucide-react";
 import Image from "next/image";
@@ -96,7 +96,7 @@ export default function ProductPage({ params }: Props) {
             </h1>
             <div className="mt-4 sm:flex sm:items-center sm:gap-4">
               <p className="text-2xl font-extrabold text-gray-900 dark:text-white sm:text-3xl">
-                {shoe.price}
+                ${shoe.price}
               </p>
 
               <div className="mt-2 flex items-center gap-2 sm:mt-0">
@@ -121,26 +121,7 @@ export default function ProductPage({ params }: Props) {
             </div>
 
             <div className="mt-6 sm:mt-8 sm:flex sm:items-center sm:gap-4">
-              <Button variant="custom">
-                <svg
-                  className="-ms-2 me-2 h-5 w-5"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 4h1.5L8 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm.75-3H7.5M11 7H6.312M17 4v6m-3-3h6"
-                  />
-                </svg>
-                Add to cart
-              </Button>
+              <AddToCart shoe={shoe} />
             </div>
 
             <hr className="my-6 border-gray-200 dark:border-gray-800 md:my-8" />

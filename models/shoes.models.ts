@@ -2,7 +2,7 @@ export type Shoe = {
   id: string;
   name: string;
   image: string;
-  price: string;
+  price: number;
   description: string;
   quantity: number;
   rating: {

@@ -1,4 +1,7 @@
+"use client";
+
 import { HEADER_LINKS } from "@/lib/constants";
+import useShoesStore from "@/lib/store";
 import { ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -6,6 +9,12 @@ import { Button } from "../ui/button";
 import Toggle from "./Toggle";
 
 export default function Navbar() {
+  const { toggleCart, cartItems } = useShoesStore();
+
+  const totalCount = cartItems.reduce((acc, curr) => {
+    return acc + curr.quantity;
+  }, 0);
+
   return (
     <header className="sticky top-0 z-40 bg-opacity-30 backdrop-blur-lg backdrop-filter">
       <nav aria-label="Top" className="mx-auto max-w-7xl px-2">
@@ -46,11 +55,19 @@ export default function Navbar() {
           {/* Cart */}
           <div className="ml-auto">
             <Button
-              className="border-0 bg-transparent"
+              className="relative border-0 bg-transparent"
               variant="outline"
               size="icon"
+              onClick={() => toggleCart(true)}
             >
               <ShoppingCart size={20} className="text-gray-500" />
+              {totalCount > 0 && (
+                <span className="absolute inset-0 -mr-6 object-right-top">
+                  <div className="inline-flex items-center rounded-full border-2 border-white bg-red-500 px-1 py-0 text-xs font-semibold leading-4 text-white">
+                    {totalCount}
+                  </div>
+                </span>
+              )}
             </Button>
           </div>
         </div>
