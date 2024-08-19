@@ -1,11 +1,11 @@
 "use client";
 
 import useShoesStore from "@/lib/store";
-import { X } from "lucide-react";
+import { ShoppingCart, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "./ui/button";
-import { Sheet, SheetClose, SheetContent } from "./ui/sheet";
+import { Sheet, SheetClose, SheetContent, SheetTitle } from "./ui/sheet";
 
 function Cart() {
   const { isCartOpen, toggleCart, cartItems, removeFromCart } = useShoesStore();
@@ -14,30 +14,25 @@ function Cart() {
     return acc + curr.shoe.price * curr.quantity;
   }, 0);
 
-  return (
-    <Sheet open={isCartOpen}>
-      <SheetContent
-        className="overflow-y-auto p-0"
-        onInteractOutside={() => toggleCart(false)}
-      >
-        <div className="sticky top-0 flex flex-row items-start justify-between space-y-0 bg-white p-3">
-          <h4 className="text-lg font-medium text-gray-900">Shopping cart</h4>
-          <div className="flex h-7 items-center">
-            <SheetClose asChild>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => toggleCart(false)}
-                className="h-8 border-none px-1 text-gray-400 hover:text-gray-500"
-              >
-                <span className="sr-only">Close panel</span>
-                <X aria-hidden="true" className="h-6 w-6" />
-              </Button>
-            </SheetClose>
+  function renderSheetContent() {
+    if (!cartItems.length) {
+      return (
+        <div className="mx-auto max-w-4xl rounded-lg bg-white px-10 py-4">
+          <div className="flex flex-col items-center justify-center py-12">
+            <ShoppingCart
+              size={100}
+              strokeWidth={1.5}
+              className="text-gray-500"
+            />
+            <p className="my-4 text-lg text-gray-600">Your cart is empty</p>
           </div>
         </div>
+      );
+    }
 
-        <div className="mt-4 px-3">
+    return (
+      <>
+        <div className="h-[calc(100vh-280px)] overflow-y-auto px-3">
           <ul role="cart-list" className="divide-y divide-gray-200">
             {cartItems.map(({ shoe, quantity }) => (
               <li key={shoe.id} className="flex py-6">
@@ -84,7 +79,7 @@ function Cart() {
           </ul>
         </div>
 
-        <div className="mt-3">
+        <div className="absolute bottom-0 mt-3 w-full">
           <div className="border-t border-gray-200 px-3 py-6 sm:px-5">
             <div className="flex justify-between text-base font-medium text-gray-900">
               <p>Subtotal</p>
@@ -118,8 +113,39 @@ function Cart() {
             </div>
           </div>
         </div>
-      </SheetContent>
-    </Sheet>
+      </>
+    );
+  }
+
+  return (
+    <div className="relative min-h-screen">
+      <Sheet open={isCartOpen}>
+        <SheetContent
+          className="h-full p-0"
+          onInteractOutside={() => toggleCart(false)}
+        >
+          <SheetTitle className="hidden" />
+          <div className="sticky top-0 flex flex-row items-start justify-between space-y-0 border-b bg-white p-3">
+            <h4 className="text-lg font-medium text-gray-900">Shopping cart</h4>
+            <div className="flex h-7 items-center">
+              <SheetClose asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => toggleCart(false)}
+                  className="h-8 border-none px-1 text-gray-400 hover:text-gray-500"
+                >
+                  <span className="sr-only">Close panel</span>
+                  <X aria-hidden="true" className="h-6 w-6" />
+                </Button>
+              </SheetClose>
+            </div>
+          </div>
+
+          {renderSheetContent()}
+        </SheetContent>
+      </Sheet>
+    </div>
   );
 }
 
