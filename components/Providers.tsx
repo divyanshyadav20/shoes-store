@@ -1,4 +1,5 @@
 import React from "react";
+import { Toaster } from "sonner";
 import Cart from "./Cart";
 import Footer from "./Footer";
 import Navbar from "./navbar/Navbar";
@@ -14,6 +15,7 @@ function Providers({ children }: Props) {
       {children}
       <Cart />
       <Footer />
+      <Toaster richColors />
     </main>
   );
 }

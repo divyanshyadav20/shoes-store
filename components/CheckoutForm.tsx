@@ -12,6 +12,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
@@ -265,6 +266,9 @@ function CheckoutForm() {
       const discount = Math.round(totalCartValue * 0.1 * 10) / 10;
       setSavings(discount);
       setTotalAfterTax(totalCartValue + tax - discount);
+      toast.success("Discount code applied successfully!");
+    } else {
+      toast.error("Invalid discount code!");
     }
   };
 
