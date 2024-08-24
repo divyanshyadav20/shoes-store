@@ -38,7 +38,7 @@ export default function Navbar() {
 
           {/* Links */}
           <div className="ml-7">
-            <ul className="hidden space-x-4 lg:flex">
+            <ul className="hidden space-x-6 lg:flex">
               {HEADER_LINKS.map(({ name, href }, index) => (
                 <li key={index}>
                   <Link
