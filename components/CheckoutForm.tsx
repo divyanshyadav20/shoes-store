@@ -80,6 +80,7 @@ function Item({
 
             <div className="flex flex-none sm:ml-0.5 sm:mr-0">
               <p
+                data-testid={`remove-${shoe.id}`}
                 onClick={() => removeItem(shoe.id)}
                 className="cursor-pointer text-sm font-medium leading-5 text-indigo-600"
               >
@@ -405,7 +406,7 @@ function CheckoutForm() {
                 <FormItem className="w-full">
                   <FormLabel>Discount Code</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input placeholder="Enter discount code" {...field} />
                   </FormControl>
 
                   <FormMessage />
@@ -473,6 +474,7 @@ function CheckoutForm() {
                 or{" "}
                 <Link
                   href="/shop"
+                  data-testid="return-to-shopping"
                   className="font-medium text-indigo-600 hover:text-indigo-500"
                 >
                   Return to Shopping

@@ -24,9 +24,15 @@ function CustomLink({ href, title, className }: CustomLinkProps) {
 
 function Footer() {
   return (
-    <footer className="my-4 border-t bg-white pt-4 dark:bg-gray-800">
+    <footer
+      data-testid="footer"
+      className="my-4 border-t bg-white pt-4 dark:bg-gray-800"
+    >
       <div className="mx-auto w-full max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
-        <span className="text-sm text-gray-500 dark:text-gray-400 sm:text-center">
+        <span
+          data-testid="copyright"
+          className="text-sm text-gray-500 dark:text-gray-400 sm:text-center"
+        >
           © 2024 <CustomLink href="/" title="Shoe Store" />. All Rights
           Reserved.
         </span>
