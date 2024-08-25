@@ -18,10 +18,9 @@ function Stats() {
   const { orders: ordersFromLS } = useStoreLocalStorage();
 
   function createStats() {
-    const countOfItemsPurchased = ordersFromLS.reduce(
-      (acc, order) => acc + order.items.length,
-      0,
-    );
+    const countOfItemsPurchased = ordersFromLS.reduce((acc, order) => {
+      return acc + order.items.reduce((acc, item) => acc + item.quantity, 0);
+    }, 0);
     const totalPurchaseAmount = ordersFromLS.reduce(
       (acc, order) => acc + order.totalAmount,
       0,

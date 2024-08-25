@@ -35,6 +35,7 @@ function addToCart(cartItems: CartItem[], shoe: Shoe) {
 }
 
 function removeFromCart(cartItems: CartItem[], id: string) {
+  console.log(cartItems);
   const hasMoreThanOne = cartItems.find(
     (item) => item.shoe.id === id,
   )?.quantity;
