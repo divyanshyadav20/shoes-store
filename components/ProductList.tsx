@@ -1,17 +1,17 @@
 "use client";
 
-import { Shoe } from "@/models";
+import { Product } from "@/models";
 import Image from "next/image";
 import Link from "next/link";
 
 type Props = {
-  shoes: Shoe[];
+  products: Product[];
   title?: string;
   showProductDetails?: boolean;
   animatedList?: boolean;
 };
 
-function ProductList({ shoes, title, showProductDetails = true }: Props) {
+function ProductList({ products, title, showProductDetails = true }: Props) {
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
@@ -22,12 +22,16 @@ function ProductList({ shoes, title, showProductDetails = true }: Props) {
         )}
 
         <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-          {shoes.map((shoe) => (
-            <Link key={shoe.id} href={`/shop/${shoe.id}`} className="group">
+          {products.map((product) => (
+            <Link
+              key={product.id}
+              href={`/products/${product.id}`}
+              className="group"
+            >
               <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
                 <Image
-                  src={shoe.image}
-                  alt={shoe.name}
+                  src={product.image}
+                  alt={product.title}
                   width={200}
                   height={200}
                   unoptimized
@@ -36,9 +40,11 @@ function ProductList({ shoes, title, showProductDetails = true }: Props) {
               </div>
               {showProductDetails && (
                 <>
-                  <h3 className="mt-4 text-sm text-gray-700">{shoe.name}</h3>
+                  <h3 className="mt-4 text-sm text-gray-700">
+                    {product.title}
+                  </h3>
                   <p className="mt-1 text-lg font-medium text-gray-900">
-                    ${shoe.price}
+                    ${product.price}
                   </p>
                 </>
               )}
